@@ -17,11 +17,17 @@
 # versions, see `rails/init.rb`.
 
 class Squash::Ruby::Railtie < Rails::Railtie
-  initializer "squash_client.configure_rails_initialization" do
+  initializer "squash_client.configure_rails_initialization" do |app|
     Squash::Ruby.configure :environment     => Rails.env.to_s,
                            :project_root    => Rails.root.to_s,
                            :repository_root => Rails.root.to_s,
                            :failsafe_log    => Rails.root.join('log', 'squash.failsafe.log').to_s
+
+    # Load the Rack middleware into the stack at the top.
+    if app.respond_to?(:config) && app.config.respond_to?(:middleware)
+      require 'squash/rails/middleware'
+      app.config.middleware.insert(0, Squash::Rails::Middleware)
+    end
   end
 
   rake_tasks { load 'squash/rails/tasks.rake' }
