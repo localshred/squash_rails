@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'squash/rails/middleware'
+require 'squash/ruby/rack'
 
-describe Squash::Rails::Middleware do
-  let(:app) { double("middleware") }
+describe Squash::Ruby::Rack do
+  let(:app) { double("app") }
   let(:env) { {} }
   let(:result) { [ 200, {}, ""] }
 
@@ -14,7 +14,7 @@ describe Squash::Rails::Middleware do
       it 'notifies squash and re-raises the error' do
         app.should_receive(:call).and_raise("Downstream error")
 
-        Squash::Ruby.should_receive(:notify) do |ex|
+        Squash::Ruby.should_receive(:notify) do |ex, user_data|
           ex.message.should match(/Downstream error/)
         end
 
