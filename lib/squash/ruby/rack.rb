@@ -53,7 +53,8 @@ module Squash
           :path           => @env['PATH_INFO'],
           :query          => @env['QUERY_STRING'],
           :headers        => filter_for_squash(request_headers, :headers),
-          :cookies        => filter_for_squash(@env['rack.request.cookie_hash'], :cookies)
+          :cookies        => filter_for_squash(@env['rack.request.cookie_hash'], :cookies),
+          :"#{rack.env}"  => filter_for_squash(@env, :rack)
         }
       end
 
